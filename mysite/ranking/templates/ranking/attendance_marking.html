@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Attendance Marking Page</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif; /* Optional: Choose an appropriate font */
+        }
+
+        .container {
+            width: 100%;
+            max-width: 400px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px; /* Added padding for better spacing */
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Optional: Add a subtle box shadow */
+            border-radius: 8px; /* Optional: Add border-radius for rounded corners */
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px; /* Improved spacing */
+        }
+
+        form {
+            width: 100%;
+        }
+
+        label, select, input[type="submit"], input[type="date"], input[type="time"] {
+            margin-bottom: 10px;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 8px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+
+        button {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #007bff;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+        }
+
+        .btn-secondary.back-btn {
+            display: block;
+            width: 8%;
+            padding: 10px;
+            background-color: #6c757d;
+            color: #fff;
+            border: none;
+            cursor: pointer;
+            border-radius: 8px;
+            text-decoration: none;
+        }
+
+        table {
+            width: 70%; /* Full width */
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        table, th, td {
+            border: 1px solid black;
+            padding: 10px; /* Improved cell padding */
+            text-align: left;
+        }
+
+        /* Style the table header */
+        th {
+            background-color: #f2f2f2;
+        }
+
+        .filter-section {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px; /* Adjust the margin as needed for spacing */
+        }
+
+        .filter-section label,
+        .filter-section input,
+        .filter-section select {
+            margin-right: 20px; /* Adjust the margin between elements */
+        }
+
+        .filter-section label,
+        .filter-section input,
+        .filter-section select,
+        .filter-section option{
+            width: auto;
+        }
+
+        .filter-section input[type="submit"] {
+            padding: 5px; /* Adjust the padding for the submit button */
+            width: auto; /* Set width to auto to fit the content */
+            margin-right: 0; /* Remove the margin for the submit button */
+        }
+
+        /* Additional style for left and right alignment */
+        .left-section,
+        .right-section {
+            width: 50%; /* Set width to 50% for each section */
+            display: flex;
+            align-items: center;
+        }
+
+        .right-section {
+            justify-content: flex-end; /* Align items to the end of the container (right side) */
+        }
+
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Attendance Marking Page</h1>
+
+        <form method="post" action="{% url 'attendance' %}">
+            {% csrf_token %}
+            <label for="student_id">Select a student:</label>
+            <select id="student_id" name="student_id" required>
+                {% for student in students %}
+                    <option value="{{ student.id }}">{{ student.name }}</option>
+                {% endfor %}
+            </select><br>
+
+            <label for="attendance_date">Attendance Date:</label>
+            <input type="date" id="attendance_date" name="attendance_date" required><br>
+
+            <label for="attendance_time">Attendance Time:</label>
+            <input type="time" id="attendance_time" name="attendance_time" required><br>
+
+            <label for="lesson">Lesson:</label>
+            <select id="lesson" name="lesson">
+                {% for lesson in lessons %}
+                    <option value="{{ lesson.id }}">{{ lesson.lesson_no }} - {{ lesson.title }}</option>
+                {% endfor %}
+            </select>
+
+            <br><button type="submit">Submit</button>
+        </form>
+
+        <a href="{% url 'staff' %}" class="btn btn-secondary back-btn">Back</a>
+    </div>
+
+    <h2>Attendance History</h2>
+    <div>
+    <form method="get" action="{% url 'attendance' %}">
+
+        <div class="filter-section left-section">
+            <!-- Content for left section -->
+            <label for="student_filter">Filter by Student Name:</label>
+            <select id="student_filter" name="student_filter">
+                <option value="">All Students</option>
+                {% for student in students %}
+                    <option value="{{ student.name }}">{{ student.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="submit" value="Filter">
+        </div>
+
+        <div class="filter-section right-section">
+            <!-- Content for right section -->
+            <label for="date_filter">Filter by Date:</label>
+            <input type="date" id="date_filter" name="date_filter">
+            <input type="submit" value="Filter">
+        </div>
+
+    </form>
+</div>
+
+    <!-- Display attendance history table -->
+    <table>
+        <tr>
+            <th>Name</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Lesson</th>
+        </tr>
+        {% for entry in attendance_history %}
+            <tr>
+                <td>{{ entry.student.name }}</td>
+                <td>{{ entry.attendance_date }}</td>
+                <td>{{ entry.attendance_time }}</td>
+                <td>{{ entry.lesson.title }}</td>
+            </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>
