@@ -1,5 +1,8 @@
 from django.urls import path
 from .views import HomePageView, LoginPageView, StaffPageView, StudentPageView, ModifyPageView, HistoryPageView,LogoutView,LessonView,LessonCreateView,TransferPageView,AttendanceMarkingView
+from django.conf import settings
+from django.conf.urls.static import static
+
 
 #类视图（class-based views）
 #我开那一个页面的时候才会启动那一个页面的class view
@@ -15,8 +18,7 @@ urlpatterns = [
     path('lesson_create/', LessonCreateView.as_view(), name='lesson_create'),
     path('transfer/', TransferPageView.as_view(), name='transfer'),
     path('attendance/marking/', AttendanceMarkingView.as_view(), name='attendance'),
-]
-
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 #函数视图（function-based views）
 #from . import views

@@ -2,6 +2,7 @@ from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.db.models import F
 from django.contrib.auth.models import User
+from django import forms
 
 class Student(models.Model):
     name = models.CharField(max_length=50)
@@ -48,7 +49,7 @@ class History(models.Model):
     timestamp = models.DateTimeField(auto_now_add=True)
 
 class Lesson(models.Model):
-    lesson_no = models.IntegerField()
+    lesson_no = models.IntegerField(unique=True)
     title = models.CharField(max_length=100)
     pdf_file = models.FileField(upload_to='pdfs/', blank=True, null=True)
     reference_link = models.URLField(blank=True, null=True)

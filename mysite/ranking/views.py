@@ -258,13 +258,13 @@ class HistoryPageView(View):
 class LessonForm(forms.ModelForm):
     class Meta:
         model = Lesson
-        fields = ['lesson_no', 'title', 'pdf_file','reference_link']
+        fields = ['lesson_no', 'title', 'pdf_file', 'reference_link']
 
 class LessonView(View):
     template_name = 'ranking/lesson_view.html'
 
     def get(self, request):
-        lessons = Lesson.objects.all()
+        lessons = Lesson.objects.all().order_by('lesson_no')
         return render(request, self.template_name, {'lessons': lessons})
 
 class LessonCreateView(View):
