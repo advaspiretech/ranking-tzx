@@ -148,7 +148,7 @@ AWS_S3_ENDPOINT_URL = 'https://sgp1.digitaloceanspaces.com'
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',    
 }
-AWS_LOCATION = 'static'
+AWS_LOCATION = ''  # 使用空字符串，而不是 'static'
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
@@ -156,7 +156,7 @@ STATICFILES_DIRS = [
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 MEDIA_URL = 'https://%s/%s/' % (AWS_STORAGE_BUCKET_NAME, 'media/')
-STATIC_URL = '/static/'
+STATIC_URL = 'https://%s/%s/' % (AWS_STORAGE_BUCKET_NAME, 'static/')
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
