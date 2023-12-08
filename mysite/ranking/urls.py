@@ -1,5 +1,5 @@
 from django.urls import path
-from .views import HomePageView, LoginPageView, StaffPageView, StudentPageView, ModifyPageView, HistoryPageView,LogoutView,LessonView,LessonCreateView,TransferPageView,AttendanceMarkingView
+from .views import HomePageView, LoginPageView, StaffPageView, StudentPageView, ModifyPageView, HistoryPageView,LogoutView,LessonView,LessonCreateView,TransferPageView,AttendanceMarkingView,LessonEditView,ProfileView
 from django.conf import settings
 from django.conf.urls.static import static
 
@@ -11,11 +11,13 @@ urlpatterns = [
     path('login/', LoginPageView.as_view(), name='login'),
     path('staff/', StaffPageView.as_view(), name='staff'),
     path('logout/', LogoutView.as_view(), name='logout'),
+    path('profile/', ProfileView.as_view(), name='profile'),
     path('student/', StudentPageView.as_view(), name='student'),
     path('modify/', ModifyPageView.as_view(), name='modify'),
     path('history/', HistoryPageView.as_view(), name='history'),
     path('lesson_view/', LessonView.as_view(), name='lesson_view'),
     path('lesson_create/', LessonCreateView.as_view(), name='lesson_create'),
+    path('modify_lesson/', LessonEditView.as_view(), name='modify_lesson'),
     path('transfer/', TransferPageView.as_view(), name='transfer'),
     path('attendance/marking/', AttendanceMarkingView.as_view(), name='attendance'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

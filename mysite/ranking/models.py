@@ -11,18 +11,32 @@ class Student(models.Model):
     highest_record_adcoins = models.IntegerField(default=0)
 
     def save(self, *args, **kwargs):
-        # Update highest_record_adcoins based on changes in current_adcoins
+        # 根据current_adcoins的变化更新highest_record_adcoins
         if self.current_adcoins > self.highest_record_adcoins:
             self.highest_record_adcoins = self.current_adcoins
 
         super().save(*args, **kwargs)
 
-        # Check if a user with the same username already exists
+        # 检查是否已经存在相同用户名的用户
         existing_user = User.objects.filter(username=self.name).first()
 
-        # Only create a new user if it doesn't exist
+        # 仅在用户不存在时创建新用户
         if not existing_user:
-            user = User.objects.create_user(username=self.name, password=self.name)
+            user = User.objects.create_user(
+                username=self.name,
+                password=self.name,
+                email="",  # 可以根据实际需要替换为实际的电子邮件格式
+            )
+
+            # 假设在Student模型中有一个id字段，可以如下使用
+            user.student_profile.id = f"A{user.id:05d}"
+            user.phone = ""
+
+            # 如果需要，可以添加更多字段，如phone
+            # user.student_profile.phone = "123456789"
+
+            # 保存用户配置的更改
+            user.student_profile.save()
 
     def __str__(self):
         return self.name

@@ -1,5 +1,6 @@
 from django.shortcuts import render #构建动态的 HTML 页面并将其呈现给用户
 from django.shortcuts import redirect #用于将用户导航到另一个 URL
+from django.shortcuts import get_object_or_404
 from django.views import View
 from .models import Student, Modify, History,Lesson,AttendanceHistory,Transfer
 from django.contrib.auth.forms import AuthenticationForm
@@ -11,6 +12,8 @@ from django.utils.decorators import method_decorator
 from django.views.generic import TemplateView
 from django.db import transaction
 from django.db.models import Q
+from django.contrib import messages
+from django.contrib.auth.forms import PasswordChangeForm
 
 
 class HomePageView(View):
@@ -89,6 +92,45 @@ class StudentPageView(View):
 
         # Redirect to the student page after adding a new user
         return redirect('student')
+    
+@method_decorator(login_required(login_url='login'), name='dispatch')
+class ProfileView(View):
+    template_name = 'ranking/profile.html'
+
+    def get(self, request):
+        # 获取当前登录用户
+        user = request.user
+
+        # 获取用户的个人资料
+        profile_data = {
+            'image': user.profile.image,  # 替换成你的用户模型中的实际字段
+            'name': user.first_name,
+            'username': user.username,
+            'id': user.profile.id,  # 替换成你的用户模型中的实际字段
+            'phone': user.profile.phone,  # 替换成你的用户模型中的实际字段
+            'email': user.email,
+        }
+
+        return render(request, self.template_name, {'profile_data': profile_data})
+
+    def post(self, request):
+        # 处理用户个人资料的更新逻辑
+        user = request.user
+
+        # 获取表单数据
+        name = request.POST.get('name')
+        phone = request.POST.get('phone')
+        email = request.POST.get('email')
+
+        # 更新用户个人资料
+        user.first_name = name
+        user.email = email
+        user.profile.phone = phone  # 替换成你的用户模型中的实际字段
+        user.save()
+
+        messages.success(request, 'Profile updated successfully!')
+
+        return redirect('profile')
     
 # class ModifyPageView(View):
 #     template_name = 'ranking/modify.html'
@@ -280,6 +322,33 @@ class LessonCreateView(View):
             form.save()
             return redirect('staff')
         return render(request, self.template_name, {'form': form})
+    
+class LessonEditView(View):
+    template_name = 'ranking/modify_lesson.html'
+
+    def get(self, request, lesson_id=None):
+        lesson = get_object_or_404(Lesson, pk=lesson_id) if lesson_id else None
+        form = LessonForm(instance=lesson)
+        lessons = Lesson.objects.all().order_by('lesson_no')
+        return render(request, self.template_name, {'form': form, 'lessons': lessons, 'lesson': lesson})
+
+    def post(self, request, lesson_id=None):
+        lesson = get_object_or_404(Lesson, pk=lesson_id) if lesson_id else None
+        form = LessonForm(request.POST, request.FILES, instance=lesson)
+    
+        if form.is_valid():
+            lesson = form.save(commit=False)
+            
+            # If lesson_no is not editable, set it to the original value
+            if lesson_id:
+                lesson.lesson_no = Lesson.objects.get(pk=lesson_id).lesson_no
+            
+            # If needed, perform additional modifications to the lesson instance here
+            lesson.save()
+            return redirect('lesson_view')  # Change this to the correct URL
+    
+        lessons = Lesson.objects.all().order_by('lesson_no')
+        return render(request, self.template_name, {'form': form, 'lessons': lessons, 'lesson': lesson})
 
     
 @method_decorator(login_required(login_url='login'), name='dispatch')

@@ -48,6 +48,7 @@
             <li><a href="{% url 'modify' %}">Modify Student</a></li>
             <li><a href="{% url 'history' %}">History</a></li>
             <li><a href="{% url 'lesson_create' %}">Lesson Create</a></li>
+            <li><a href="{% url 'modify_lesson' %}">Modify Lesson</a></li>
             <li><a href="{% url 'attendance' %}">Attendance</a></li>
             {% endif %}
             <li><a href="{% url 'transfer' %}">Transfer</a></li>
@@ -59,6 +60,7 @@
                 <h6>Welcome, {{ student.name }}</h6>
             {% endif %}
             <li><a href="{% url 'logout' %}">Log Out</a></li>
+            <li><a href="{% url 'profile' %}">Profile</a></li>
         </ul>
     </div>
     
