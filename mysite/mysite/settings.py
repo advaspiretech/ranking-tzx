@@ -146,17 +146,18 @@ AWS_SECRET_ACCESS_KEY = 'Em8xtZywAClFto6DjjeRaPbUa+0XKAPsxKpMrahyVq0'
 AWS_STORAGE_BUCKET_NAME = 'advaspire-spaces'
 AWS_S3_ENDPOINT_URL = 'https://sgp1.digitaloceanspaces.com'
 AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',    
+    'CacheControl': 'max-age=86400',
 }
-AWS_LOCATION = 'static'
+AWS_LOCATION_STATIC = 'static'  # For static files
+AWS_LOCATION_MEDIA = 'media'  # For media files
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static'),
 ]
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-MEDIA_URL = 'https://%s/%s/' % (AWS_STORAGE_BUCKET_NAME, 'media/')
-STATIC_URL = '/static/'
+MEDIA_URL = 'https://%s/%s/' % (AWS_STORAGE_BUCKET_NAME, AWS_LOCATION_MEDIA)
+STATIC_URL = 'https://%s/%s/' % (AWS_STORAGE_BUCKET_NAME, AWS_LOCATION_STATIC)
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 
