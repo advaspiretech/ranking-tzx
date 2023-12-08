@@ -159,3 +159,5 @@ MEDIA_URL = 'https://%s/%s/' % (AWS_STORAGE_BUCKET_NAME, 'media/')
 STATIC_URL = '/static/'
 STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+
+AWS_S3_SIGNATURE_VERSION = 's3v4'
